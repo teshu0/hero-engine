@@ -53,16 +53,20 @@ GameEngine engine = new GameEngine("My Game", 800, 600);
 engine.init();
 
 // 3. システムを追加
-engine.addSystem(new RenderSystem(engine.getGamePanel()));
-engine.addSystem(new MovementSystem());
-engine.addSystem(new CollisionSystem());
+engine.addSystems(
+    new RenderSystem(engine.getGamePanel()),
+    new MovementSystem(),
+    new CollisionSystem()
+);
 
 // 4. エンティティを作成
 EntityManager entityManager = engine.getEntityManager();
 Entity player = entityManager.createEntity();
-player.addComponent(new Transform(400, 300));
-player.addComponent(new Sprite(40, 40, Color.GREEN));
-player.addComponent(new Velocity(100, 50));
+player.addComponents(
+    new Sprite(40, 40, Color.GREEN),
+    new Transform(400, 300),
+    new Velocity(100, 50)
+);
 
 // 5. ゲームを開始
 engine.start();
