@@ -71,10 +71,11 @@ import java.awt.Color;
 EntityManager entityManager = engine.getEntityManager();
 
 // プレイヤーを作成
-Entity player = entityManager.createEntity();
-player.addComponent(new Transform(400, 300));  // 位置
-player.addComponent(new Sprite(40, 40, Color.BLUE));  // 見た目
-player.addComponent(new Velocity(0, 0));  // 速度
+Entity player = entityManager.spawn(
+    new Transform(400, 300),  // 位置
+    new Sprite(40, 40, Color.BLUE),  // 見た目
+    new Velocity(0, 0)  // 速度
+);
 ```
 
 ### ステップ4: 入力を処理
@@ -171,23 +172,25 @@ public class SimpleGame {
         
         // プレイヤー作成
         EntityManager em = engine.getEntityManager();
-        Entity player = em.createEntity();
-        player.addComponent(new Transform(400, 300));
-        player.addComponent(new Sprite(50, 50, Color.GREEN));
-        player.addComponent(new Velocity());
+        Entity player = em.spawn(
+            new Transform(400, 300),
+            new Sprite(50, 50, Color.GREEN),
+            new Velocity()
+        );
         
         // 敵作成
         for (int i = 0; i < 5; i++) {
-            Entity enemy = em.createEntity();
-            enemy.addComponent(new Transform(
-                100 + i * 150, 
-                100 + (i % 2) * 400
-            ));
-            enemy.addComponent(new Sprite(30, 30, Color.RED));
-            enemy.addComponent(new Velocity(
-                50 + i * 10, 
-                30 + i * 5
-            ));
+            Entity enemy = em.spawn(
+                new Transform(
+                    100 + i * 150, 
+                    100 + (i % 2) * 400
+                ),
+                new Sprite(30, 30, Color.RED),
+                new Velocity(
+                    50 + i * 10, 
+                    30 + i * 5
+                )
+            );
         }
         
         // 開始

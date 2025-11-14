@@ -24,8 +24,7 @@ public class MinimalSample {
         engine.addSystems(new RenderSystem(engine.getGamePanel()));
 
         // 4. エンティティを1つ作成
-        Entity box = engine.getEntityManager().createEntity();
-        box.addComponents(
+        engine.getEntityManager().spawn(
                 new Transform(400, 300), // 画面中央
                 new Sprite(100, 100, Color.GREEN) // 緑の四角
         );

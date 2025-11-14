@@ -67,8 +67,7 @@ public class PongGame {
      */
     private static void createGameEntities(EntityManager entityManager) {
         // 左側のパドル（プレイヤー）
-        Entity playerPaddle = entityManager.createEntity();
-        playerPaddle.addComponents(
+        entityManager.spawn(
                 new Transform(30, HEIGHT / 2),
                 new Sprite(PADDLE_WIDTH, PADDLE_HEIGHT, Color.WHITE),
                 new Velocity(),
@@ -77,8 +76,7 @@ public class PongGame {
         );
 
         // 右側のパドル（AI）
-        Entity aiPaddle = entityManager.createEntity();
-        aiPaddle.addComponents(
+        entityManager.spawn(
                 new Transform(WIDTH - 30, HEIGHT / 2),
                 new Sprite(PADDLE_WIDTH, PADDLE_HEIGHT, Color.WHITE),
                 new Velocity(),
@@ -87,8 +85,7 @@ public class PongGame {
         );
 
         // ボール
-        Entity ball = entityManager.createEntity();
-        ball.addComponents(
+        entityManager.spawn(
                 new Transform(WIDTH / 2, HEIGHT / 2),
                 new Sprite(BALL_SIZE, BALL_SIZE, Color.WHITE),
                 new Velocity(INITIAL_BALL_SPEED, INITIAL_BALL_SPEED * 0.5f),
@@ -98,16 +95,14 @@ public class PongGame {
 
         // 中央線
         for (int i = 0; i < HEIGHT; i += 20) {
-            Entity line = entityManager.createEntity();
-            line.addComponents(
+            entityManager.spawn(
                     new Transform(WIDTH / 2, i + 10),
                     new Sprite(4, 10, new Color(100, 100, 100))
             );
         }
 
         // スコアテキスト
-        Entity scoreText = entityManager.createEntity();
-        scoreText.addComponents(
+        entityManager.spawn(
                 new Transform(WIDTH / 2, 50),
                 new Text("0  :  0", new Font("SansSerif", Font.BOLD, 40), Color.WHITE),
                 new ScoreDisplayTag()

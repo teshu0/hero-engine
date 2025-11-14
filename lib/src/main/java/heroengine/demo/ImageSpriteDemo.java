@@ -30,8 +30,7 @@ public class ImageSpriteDemo {
             BufferedImage sampleImage = createSampleImage(100, 100);
 
             // 画像エンティティを作成
-            Entity imageEntity = engine.getEntityManager().createEntity();
-            imageEntity.addComponents(
+            Entity imageEntity = engine.getEntityManager().spawn(
                     new Transform(400, 300),
                     new ImageSprite(sampleImage),
                     new Velocity(0, 0)
@@ -40,8 +39,7 @@ public class ImageSpriteDemo {
 
             // 2つ目の画像エンティティ（半透明）
             BufferedImage sampleImage2 = createSampleImage2(80, 80);
-            Entity imageEntity2 = engine.getEntityManager().createEntity();
-            imageEntity2.addComponents(
+            Entity imageEntity2 = engine.getEntityManager().spawn(
                     new Transform(300, 200),
                     new ImageSprite(sampleImage2)
             );
@@ -51,10 +49,9 @@ public class ImageSpriteDemo {
 
             // 3つ目の画像エンティティ（回転サンプル）
             BufferedImage sampleImage3 = createSampleImage3(60, 60);
-            Entity imageEntity3 = engine.getEntityManager().createEntity();
             Transform transform3 = new Transform(500, 400);
             transform3.rotation = (float) (Math.PI / 4); // 45度回転
-            imageEntity3.addComponents(
+            Entity imageEntity3 = engine.getEntityManager().spawn(
                     transform3,
                     new ImageSprite(sampleImage3)
             );
@@ -204,11 +201,9 @@ public class ImageSpriteDemo {
         engine.init();
 
         // 画像ファイルから読み込み
-        Entity imageEntity = engine.getEntityManager().createEntity();
-
         // 方法1: ファイルパスから読み込み
         ImageSprite imageSprite = new ImageSprite("path/to/your/image.png");
-        imageEntity.addComponents(
+        engine.getEntityManager().spawn(
                 new Transform(400, 300),
                 imageSprite
         );

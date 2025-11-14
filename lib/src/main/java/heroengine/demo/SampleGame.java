@@ -64,8 +64,7 @@ public class SampleGame {
      */
     private static void createEntities(EntityManager entityManager) {
         // プレイヤーエンティティ
-        Entity player = entityManager.createEntity();
-        player.addComponents(
+        entityManager.spawn(
                 new Transform(WIDTH / 2, HEIGHT / 2),
                 new Sprite(40, 40, Color.GREEN),
                 new Velocity(),
@@ -74,8 +73,7 @@ public class SampleGame {
         );
 
         // 障害物1
-        Entity obstacle1 = entityManager.createEntity();
-        obstacle1.addComponents(
+        entityManager.spawn(
                 new Transform(200, 150),
                 new Sprite(60, 60, Color.BLUE),
                 new Velocity(50, 30),
@@ -83,8 +81,7 @@ public class SampleGame {
         );
 
         // 障害物2
-        Entity obstacle2 = entityManager.createEntity();
-        obstacle2.addComponents(
+        entityManager.spawn(
                 new Transform(600, 400),
                 new Sprite(80, 40, Color.YELLOW),
                 new Velocity(-70, -40),
@@ -92,8 +89,7 @@ public class SampleGame {
         );
 
         // 障害物3
-        Entity obstacle3 = entityManager.createEntity();
-        obstacle3.addComponents(
+        entityManager.spawn(
                 new Transform(400, 500),
                 new Sprite(50, 50, Color.MAGENTA),
                 new Velocity(60, -60),
@@ -111,8 +107,7 @@ public class SampleGame {
      * 壁を作成
      */
     private static void createWall(EntityManager entityManager, float x, float y, int width, int height) {
-        Entity wall = entityManager.createEntity();
-        wall.addComponents(
+        entityManager.spawn(
                 new Transform(x, y),
                 new Sprite(width, height, Color.GRAY),
                 new BoxCollider(width, height)

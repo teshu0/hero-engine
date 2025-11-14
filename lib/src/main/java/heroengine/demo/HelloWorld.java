@@ -3,7 +3,6 @@ package heroengine.demo;
 import heroengine.components.Text;
 import heroengine.components.Transform;
 import heroengine.core.GameEngine;
-import heroengine.ecs.Entity;
 import heroengine.systems.RenderSystem;
 
 import java.awt.*;
@@ -24,8 +23,7 @@ public class HelloWorld {
         engine.addSystems(new RenderSystem(engine.getGamePanel()));
 
         // "Hello, World!" テキストを作成
-        Entity helloText = engine.getEntityManager().createEntity();
-        helloText.addComponents(
+        engine.getEntityManager().spawn(
                 new Transform(400, 300),
                 new Text(
                         "Hello, World!",

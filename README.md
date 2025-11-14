@@ -63,10 +63,9 @@ engine.addSystems(
 
 // 4. エンティティを作成
 EntityManager entityManager = engine.getEntityManager();
-Entity player = entityManager.createEntity();
-player.addComponents(
-    new Sprite(40, 40, Color.GREEN),
+Entity player = entityManager.spawn(
     new Transform(400, 300),
+    new Sprite(40, 40, Color.GREEN),
     new Velocity(100, 50)
 );
 
@@ -245,9 +244,8 @@ public class ParticleSystem extends GameSystem {
 
 ```java
 // 画像ファイルから読み込み
-Entity imageEntity = entityManager.createEntity();
 ImageSprite sprite = new ImageSprite("path/to/image.png");
-imageEntity.addComponents(
+Entity imageEntity = entityManager.spawn(
     new Transform(400, 300),
     sprite
 );

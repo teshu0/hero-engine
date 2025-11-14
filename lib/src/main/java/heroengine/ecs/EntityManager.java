@@ -22,8 +22,9 @@ public class EntityManager {
     /**
      * 新しいエンティティを作成
      */
-    public Entity createEntity() {
+    public Entity spawn(Component... components) {
         Entity entity = new Entity();
+        entity.addComponents(components);
         entitiesToAdd.add(entity);
         return entity;
     }

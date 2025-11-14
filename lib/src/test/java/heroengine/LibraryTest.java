@@ -18,7 +18,7 @@ class LibraryTest {
     @Test
     void testEntityCreation() {
         EntityManager entityManager = new EntityManager();
-        Entity entity = entityManager.createEntity();
+        Entity entity = entityManager.spawn();
         assertNotNull(entity);
         assertTrue(entity.isActive());
     }
@@ -38,12 +38,14 @@ class LibraryTest {
     void testEntityManagerFiltering() {
         EntityManager entityManager = new EntityManager();
 
-        Entity entity1 = entityManager.createEntity();
-        entity1.addComponents(new Transform(0, 0));
-        entity1.addComponents(new Sprite(10, 10, Color.RED));
+        entityManager.spawn(
+                new Transform(0, 0),
+                new Sprite(10, 10, Color.RED)
+        );
 
-        Entity entity2 = entityManager.createEntity();
-        entity2.addComponents(new Transform(0, 0));
+        entityManager.spawn(
+                new Transform(0, 0)
+        );
 
         entityManager.refresh();
 
