@@ -1,5 +1,6 @@
 package heroengine.systems;
 
+import heroengine.components.ImageSprite;
 import heroengine.components.Sprite;
 import heroengine.components.Text;
 import heroengine.components.Transform;
@@ -9,6 +10,7 @@ import heroengine.ecs.GameSystem;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,24 +34,37 @@ public class RenderSystem extends GameSystem {
      * 描画処理（JPanel#paintComponent から呼ばれる）
      */
     public void render(Graphics2D g2d) {
-        // スプライトの描画
+        // すべての描画対象エンティティを収集してzOrderでソート
+        List<RenderableEntity> renderables = new ArrayList<>();
+
+        // 通常のスプライトを追加
         List<Entity> spriteEntities = entityManager.getEntitiesWith(Transform.class, Sprite.class);
+        for (Entity entity : spriteEntities) {
+            Sprite sprite = entity.getComponent(Sprite.class).get();
+            if (sprite.visible) {
+                renderables.add(new RenderableEntity(entity, sprite.zOrder, RenderType.SPRITE));
+            }
+        }
+
+        // 画像スプライトを追加
+        List<Entity> imageSpriteEntities = entityManager.getEntitiesWith(Transform.class, ImageSprite.class);
+        for (Entity entity : imageSpriteEntities) {
+            ImageSprite imageSprite = entity.getComponent(ImageSprite.class).get();
+            if (imageSprite.visible) {
+                renderables.add(new RenderableEntity(entity, imageSprite.zOrder, RenderType.IMAGE_SPRITE));
+            }
+        }
 
         // zOrderでソート（小さい順=奥から描画）
-        spriteEntities.sort(Comparator.comparingInt(e
-                -> e.getComponent(Sprite.class).get().zOrder
-        ));
+        renderables.sort(Comparator.comparingInt(r -> r.zOrder));
 
-        for (Entity entity : spriteEntities) {
-            Transform transform = entity.getComponent(Transform.class).get();
-            Sprite sprite = entity.getComponent(Sprite.class).get();
-
-            if (!sprite.visible) {
-                continue;
-            }
+        // 描画
+        for (RenderableEntity renderable : renderables) {
+            Transform transform = renderable.entity.getComponent(Transform.class).get();
 
             // 変換行列を保存
             AffineTransform oldTransform = g2d.getTransform();
+            Composite oldComposite = g2d.getComposite();
 
             // 変換を適用
             AffineTransform newTransform = new AffineTransform();
@@ -58,16 +73,37 @@ public class RenderSystem extends GameSystem {
             newTransform.scale(transform.scaleX, transform.scaleY);
             g2d.transform(newTransform);
 
-            // 描画（中心が原点）
-            g2d.setColor(sprite.color);
-            g2d.fillRect(
-                    -sprite.width / 2,
-                    -sprite.height / 2,
-                    sprite.width,
-                    sprite.height
-            );
+            if (renderable.type == RenderType.SPRITE) {
+                // 通常のスプライトを描画
+                Sprite sprite = renderable.entity.getComponent(Sprite.class).get();
+                g2d.setColor(sprite.color);
+                g2d.fillRect(
+                        -sprite.width / 2,
+                        -sprite.height / 2,
+                        sprite.width,
+                        sprite.height
+                );
+            } else if (renderable.type == RenderType.IMAGE_SPRITE) {
+                // 画像スプライトを描画
+                ImageSprite imageSprite = renderable.entity.getComponent(ImageSprite.class).get();
+
+                // 透明度を設定
+                if (imageSprite.alpha < 1.0f) {
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageSprite.alpha));
+                }
+
+                g2d.drawImage(
+                        imageSprite.image,
+                        -imageSprite.width / 2,
+                        -imageSprite.height / 2,
+                        imageSprite.width,
+                        imageSprite.height,
+                        null
+                );
+            }
 
             // 変換を元に戻す
+            g2d.setComposite(oldComposite);
             g2d.setTransform(oldTransform);
         }
 
@@ -97,5 +133,29 @@ public class RenderSystem extends GameSystem {
 
             g2d.drawString(text.text, x, y);
         }
+    }
+
+    /**
+     * 描画可能なエンティティの情報を保持
+     */
+    private static class RenderableEntity {
+
+        Entity entity;
+        int zOrder;
+        RenderType type;
+
+        RenderableEntity(Entity entity, int zOrder, RenderType type) {
+            this.entity = entity;
+            this.zOrder = zOrder;
+            this.type = type;
+        }
+    }
+
+    /**
+     * 描画タイプ
+     */
+    private enum RenderType {
+        SPRITE,
+        IMAGE_SPRITE
     }
 }

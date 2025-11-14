@@ -30,8 +30,10 @@ SwingベースのECS（Entity Component System）アーキテクチャを採用�
 #### 標準コンポーネント
 - `Transform`: 位置、回転、スケール
 - `Sprite`: 描画情報（サイズ、色、zオーダー）
+- `ImageSprite`: 画像スプライト（画像ファイルを読み込んで表示）
 - `Velocity`: 速度
 - `BoxCollider`: 矩形の当たり判定
+- `Text`: テキスト表示
 
 #### 標準システム
 - `RenderSystem`: Swingで描画
@@ -163,6 +165,19 @@ java -cp lib/build/libs/lib.jar heroengine.demo.HelloWorld
 - 衝突すると色が変わる
 - 画面端に壁がある
 
+### 4. ImageSpriteDemo - 画像表示デモ
+
+画像を読み込んで表示し、キーボードで移動できるデモ。
+
+```bash
+java -cp lib/build/libs/lib.jar heroengine.demo.ImageSpriteDemo
+```
+
+**操作方法：**
+- 矢印キーで中央の画像を移動
+- ESCキーで終了
+- 半透明や回転のサンプルも表示
+
 ## ビルド
 
 ```bash
@@ -181,6 +196,8 @@ lib/src/main/java/org/example/heroengine/
 ├── components/       # 標準コンポーネント
 │   ├── Transform.java
 │   ├── Sprite.java
+│   ├── ImageSprite.java
+│   ├── Text.java
 │   ├── Velocity.java
 │   └── BoxCollider.java
 ├── systems/          # 標準システム
@@ -224,8 +241,31 @@ public class ParticleSystem extends GameSystem {
 
 ### スプライトシートの読み込み
 
-現在は単色の矩形のみですが、`Sprite`コンポーネントを拡張してBufferedImageを保持し、
-`RenderSystem`で画像を描画するように実装することで、テクスチャ付きスプライトを実現できます。
+`ImageSprite`コンポーネントが実装されており、画像ファイルを読み込んで表示できます。
+
+```java
+// 画像ファイルから読み込み
+Entity imageEntity = entityManager.createEntity();
+ImageSprite sprite = new ImageSprite("path/to/image.png");
+imageEntity.addComponents(
+    new Transform(400, 300),
+    sprite
+);
+
+// リソースファイルから読み込み
+ImageSprite sprite2 = new ImageSprite(
+    getClass().getResourceAsStream("/images/player.png")
+);
+
+// サイズ変更
+sprite.setSize(100, 100);
+
+// 透明度設定
+sprite.setAlpha(0.5f); // 50%透明
+
+// 描画順序
+sprite.setZOrder(10); // 大きいほど手前に描画
+```
 
 ## ライセンス
 
@@ -233,7 +273,7 @@ public class ParticleSystem extends GameSystem {
 
 ## 今後の拡張案
 
-- [ ] テクスチャ/画像スプライトのサポート
+- [x] テクスチャ/画像スプライトのサポート
 - [ ] アニメーションシステム
 - [ ] サウンド再生機能
 - [ ] タイルマップサポート
